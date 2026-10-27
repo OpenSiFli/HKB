@@ -1,4 +1,4 @@
-# HKB —— SiFli 硬件知识库（Hardware Knowledge Base）
+# SiFli-HKB —— SiFli 硬件知识库（Hardware Knowledge Base）
 
 > 一个**可直接下载到本地、供 AI 工具检索与原理图评审使用**的 SiFli（思澈科技）MCU 硬件知识库。
 > **无网页版、不走文档站点构建**——本仓库的目的就是让你 `git clone` 下来，用本地 AI 助手 / RAG 直接读取，回答硬件设计问题、评审原理图。
@@ -7,7 +7,7 @@
 
 ## 一、这是什么
 
-HKB（Hardware Knowledge Base）把分散在规格书、用户手册、硬件设计指南、参考设计、官方 Checklist、AVL 物料清单与工程复盘中的 SiFli MCU 硬件知识，结构化沉淀为一套**纯文本 / Markdown 知识资产**，供开发者在本地离线使用：
+SiFli-HKB（Hardware Knowledge Base）把分散在规格书、用户手册、硬件设计指南、参考设计、官方 Checklist、AVL 物料清单与工程复盘中的 SiFli MCU 硬件知识，结构化沉淀为一套**纯文本 / Markdown 知识资产**，供开发者在本地离线使用：
 
 - **AI 硬件问答**：把本仓库作为上下文喂给 AI 助手，检索封装、引脚、电气参数、外设、电源架构、约束禁忌等问题。
 - **原理图评审（Schematic Review）**：依据仓库内的校验规则（`check_rules`）与设计规范（`design_rules`）、参考设计（黄金样板），让 AI 对照检查你的原理图 PDF。
@@ -23,7 +23,7 @@ HKB（Hardware Knowledge Base）把分散在规格书、用户手册、硬件设
 > `Knowledge_Base/` 本身就是一份独立 **Obsidian Vault** 的内容根目录——你可以直接用 Obsidian 打开它，也可以用任意编辑器 / AI 把整个文件夹当上下文读取。
 
 ```
-HKB/
+SiFli-HKB/
 ├── LICENSE
 ├── README.md
 ├── .gitignore                              ← 忽略 Obsidian 个人视图状态等本地文件
