@@ -1,24 +1,38 @@
 # HKB —— SiFli 硬件知识库（Hardware Knowledge Base）
 
-> 本仓库是 SiFli（思澈科技）MCU 硬件知识的**文档源仓库**，基于 Sphinx 构建，自动部署至 `docs.sifli.com/projects/HKB`。
-> 内容沉淀自内部硬件知识库（Obsidian 双链知识库），面向硬件工程师，提供 SiFli 全系列 MCU 与开发板的硬件设计、审查与选型参考。
+> 一个**可直接下载到本地、供 AI 工具检索与原理图评审使用**的 SiFli（思澈科技）MCU 硬件知识库。
+> **无网页版、不走文档站点构建**——本仓库的目的就是让你 `git clone` 下来，用本地 AI 助手 / RAG 直接读取，回答硬件设计问题、评审原理图。
 
 ---
 
-## 一、仓库定位
+## 一、这是什么
 
-HKB（Hardware Knowledge Base）系统整理 SiFli 全系列 MCU 与开发板的硬件知识，目标是把分散在规格书、用户手册、硬件设计指南、参考设计、官方 Checklist、AVL 物料清单与工程复盘中的关键信息，结构化沉淀为可检索、可审图、可复用的知识资产。
+HKB（Hardware Knowledge Base）把分散在规格书、用户手册、硬件设计指南、参考设计、官方 Checklist、AVL 物料清单与工程复盘中的 SiFli MCU 硬件知识，结构化沉淀为一套**纯文本 / Markdown 知识资产**，供开发者在本地离线使用：
 
-知识库按两大平级类别组织：
+- **AI 硬件问答**：把本仓库作为上下文喂给 AI 助手，检索封装、引脚、电气参数、外设、电源架构、约束禁忌等问题。
+- **原理图评审（Schematic Review）**：依据仓库内的校验规则（`check_rules`）与设计规范（`design_rules`）、参考设计（黄金样板），让 AI 对照检查你的原理图。
 
-- **MCU 全系列硬件知识库**（`wiki/mcu/`）—— 以芯片实体为核心，覆盖外设、引脚复用、硬件设计指南、参考设计、审图规则、设计规范、故障案例、AVL 物料库。
-- **开发板（Dev Board）硬件知识库**（`wiki/dev_board/`）—— 以原理图为主要入库依据，提取开发板核心参数并与 MCU 知识库双向双链。
+> 说明：本地 Obsidian 知识库是这份仓库的内容来源，二者内容一致、只是载体不同。本仓库**不经过 Sphinx / 文档站点构建**，也不部署任何网页版。
 
 ---
 
 ## 二、内容结构
 
-### 1. MCU 全系列硬件知识库
+知识库按两大平级类别组织：
+
+### 1. MCU 全系列硬件知识库（`wiki/mcu/`）
+
+以芯片实体为核心，覆盖：
+
+- **芯片实体（chip_entity）**：封装、引脚、电气参数、极限规格、典型电路、约束禁忌、勘误、原厂/企业规范。
+- **外设专项（peripheral）**：GPIO / 电源 / 时钟 / GPADC / 音频 / 蓝牙射频 / 串口（UART-I2C-SPI-CAN）/ 存储（MPI-SD-eMMC）/ 定时器 PWM / 显示与图形（ePicasso·LCD·DCMI·eZip）等。
+- **引脚复用矩阵（PINMUX）**：大核 GPIO 完整复用总表 + matrix index + LCD mux；以官方 xlsx 为权威依据。
+- **硬件设计指南（Hardware Design Guide）**：官方 wiki 硬件设计指南，3.3V 系列与电池系列各一份。
+- **参考设计原理图（Reference Schematic）**：官方参考设计结构化提炼（黄金样板），含电源架构 / 关键 BOM / 设计要点——原理图评审的主要对照基准。
+- **校验规则（Check Rules / `CR_*`）**：审图规则库，覆盖多电源域、绝对最大额定值、EPAD 接地、低功耗浮空 IO、48M/32K 晶振、BLE 天线、USB 差分对、复位电平、BOOT 寄存器、I2C 总线卡死、存储互斥、接口电平匹配、电池 OVP/电源树等——**原理图 AI 评审的核心依据**。
+- **设计规范（Design Rules / `DR_*`）**：电源架构、GPIO 默认 PUPD 高阻、低功耗 IO 保持、复位设计、调试接口、BOOT 模式、PA34 电源键引脚作普通 GPIO 使用等。
+- **故障案例（Fault Cases / `FC_*`）**：I2C 总线卡死、调试接口失效、Hibernate 合封漏电、SDMMC-FIFO 溢出等工程复盘。
+- **AVL 合格物料库**：SiFli 官方 AVL 认证物料清单（晶体 / Buck 电感 / Nor Flash / SPI Nand / SD Nand / LCD 驱动），BOM 选型优先级高于器件原厂规格书，覆盖**全系列 SIFLI MCU**。
 
 #### 已覆盖芯片家族（两大家族，各含两个独立系列，不可合并看待）
 
@@ -31,50 +45,45 @@ HKB（Hardware Knowledge Base）系统整理 SiFli 全系列 MCU 与开发板的
 
 > 📌 文档标题大小写与芯片系列**一致**：3.3V 系列用大写 X（如 DS5202-SF32LB52X），电池系列用小写 x（如 DS5201-SF32LB52x）。
 
-#### 知识维度
-
-- **芯片实体（chip_entity）**：封装、引脚、电气参数、极限规格、典型电路、约束禁忌、勘误、原厂/企业规范。
-- **外设专项（peripheral）**：GPIO / 电源 / 时钟 / GPADC / 音频 / 蓝牙射频 / 串口（UART-I2C-SPI-CAN）/ 存储（MPI-SD-eMMC）/ 定时器 PWM / 显示与图形（ePicasso·LCD·DCMI·eZip）等。
-- **引脚复用矩阵（PINMUX）**：大核 GPIO 完整复用总表 + matrix index + LCD mux；以官方 xlsx 为权威依据，并标注与规格书差异。
-- **硬件设计指南（Hardware Design Guide）**：官方 wiki 硬件设计指南，3.3V 系列与电池系列各一份，含封装 / 典型方案 / 原理图 / PCB 设计（叠层·走线·EMI/ESD）全章节。
-- **参考设计原理图（Reference Schematic）**：官方参考设计结构化提炼（黄金样板），含电源架构 / 关键 BOM / 设计要点与对应审图规则。
-- **校验规则（Check Rules / `CR_*`）**：源自规格书、用户手册、参考设计与官方 Checklist 的审图规则，覆盖多电源域、绝对最大额定值、EPAD 接地、低功耗浮空 IO、48M/32K 晶振、BLE 天线、USB 差分对、复位电平、BOOT 寄存器、I2C 总线卡死、存储互斥、接口电平匹配、电池 OVP/电源树等。
-- **设计规范（Design Rules / `DR_*`）**：电源架构、GPIO 默认 PUPD 高阻、低功耗 IO 保持、复位设计、调试接口、BOOT 模式、PA34 电源键引脚作普通 GPIO 使用等。
-- **故障案例（Fault Cases / `FC_*`）**：I2C 总线卡死、调试接口失效、Hibernate 合封漏电、SDMMC-FIFO 溢出等工程复盘。
-- **AVL 合格物料库**：SiFli 官方 AVL 认证物料清单（晶体 / Buck 电感 / Nor Flash / SPI Nand / SD Nand / LCD 驱动），BOM 选型优先级高于器件原厂规格书，覆盖**全系列 SIFLI MCU**。
-
-### 2. 开发板（Dev Board）硬件知识库
+### 2. 开发板（Dev Board）硬件知识库（`wiki/dev_board/`）
 
 以原理图为主要入库依据，提取开发板 11 项核心参数（平台 / 芯片 / 模组 / 上芯方式 / 存储配置 / 供电方式 / 外设 / 调试接口 / 适用场景 / 使用指南文档 / 图纸），与 MCU 知识库单向引用（不修改 MCU 侧文件）。
 
-### 3. 原始资料（Raw）与来源摘要
+### 3. 原始资料（Raw）与来源摘要（`raw/`）
 
 - 规格书 / 勘误 / 内部一致性核查报告
 - 官方硬件 Checklist、硬件设计指南 PDF、参考设计 / PCB / BOM
 - 企业规范 / 报告模板、故障复盘原始资料
-- 每份原始资料对应一份来源摘要页（`sources/`），永久保留双链。
+- 每份原始资料对应一份来源摘要页（`sources/`），永久保留出处双链
 
 ---
 
-## 三、文档构建
+## 三、给开发者的使用方法
 
-本仓库使用 SiFli 官方文档工具链 `sifli-docs-toolbox` 构建中英双语文档：
-
-```shell
-pip install -r requirements.txt
-sf-build-docs --lang zh_CN --version latest
-sf-build-docs --lang en     --version latest
+```bash
+git clone https://github.com/OpenSiFli/HKB.git
 ```
 
-- 文档源位于 `source/`（按 `zh_CN` / `en` 分语言）。
-- 部署地址与版本由 `.github/workflows/build-docs.yml` 中的 `PROJ_NAME` 控制（当前为 `HKB`），版本号列表见 `version.json`。
-- CI 默认 `workflow_dispatch` 手动触发（push 触发已注释关闭）。
+克隆后，把整个仓库目录作为上下文提供给你的 AI 工具即可，**无需任何构建步骤**：
 
-> 说明：当前 `source/` 下的示例模板内容已清理，正式知识库文档正在从内部知识库迁移填充中。
+- **AI 硬件问答**：直接询问，例如
+  - "SF32LB52x 电池系列的电源引脚有哪些？充电电流多大？"
+  - "SF32LB57X 的 GPIO 默认上下拉状态是什么？"
+  - "Audio ADC 单端输入需要多大的隔直电容？"
+- **原理图评审**：把你的原理图（或器件清单 / 关键网络）连同仓库内的 `check_rules` / `design_rules` 一起交给 AI，让它逐条对照校验规则，给出评审意见与整改建议。
+- 若你的工具支持本地知识库 / RAG / MCP，可将本仓库配置为其中一个知识源，提升检索精度。
+
+> 所有页面以双链（Obsidian 风格 `[[...]]`）互相关联；在支持双链的查看器（如 Obsidian）中体验最佳，不支持时也不影响纯文本检索。
 
 ---
 
-## 四、相关资源
+## 四、内容状态
+
+本仓库用于承载上述硬件知识库，内容正从内部知识库持续迁移填充中。`raw/` 下的原始资料为只读参考，请勿直接修改。
+
+---
+
+## 五、相关资源
 
 - SiFli 官网：<https://www.sifli.com/>
 - 芯片选型与开发板 Wiki（中文 / English）：<https://wiki.sifli.com/> 、<https://wiki.sifli.com/en/>
@@ -85,6 +94,6 @@ sf-build-docs --lang en     --version latest
 
 ---
 
-## 五、License
+## 六、License
 
 本仓库文档采用 **Apache License 2.0**，详见 [LICENSE](./LICENSE)。
