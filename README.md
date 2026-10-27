@@ -18,15 +18,16 @@ HKB（Hardware Knowledge Base）把分散在规格书、用户手册、硬件设
 
 ## 二、仓库内容总览
 
-仓库根目录只有三样东西：`LICENSE`、`README.md`，以及承载全部知识的 **`Knowledge Base/`** 文件夹。
+仓库根目录只有四样东西：`LICENSE`、`README.md`、`.gitignore`，以及承载全部知识的 **`Knowledge_Base/`** 文件夹。
 
-> `Knowledge Base/` 本身就是一份独立 **Obsidian Vault** 的内容根目录——你可以直接用 Obsidian 打开它，也可以用任意编辑器 / AI 把整个文件夹当上下文读取。
+> `Knowledge_Base/` 本身就是一份独立 **Obsidian Vault** 的内容根目录——你可以直接用 Obsidian 打开它，也可以用任意编辑器 / AI 把整个文件夹当上下文读取。
 
 ```
 HKB/
 ├── LICENSE
 ├── README.md
-└── Knowledge Base/                         ← 知识库主体（可整体作为 AI 上下文）
+├── .gitignore                              ← 忽略 Obsidian 个人视图状态等本地文件
+└── Knowledge_Base/                         ← 知识库主体（可整体作为 AI 上下文）
     ├── wiki/                               ← 结构化知识层（114 篇 Markdown）
     │   ├── mcu/all/                        ← MCU 全系列硬件知识
     │   │   ├── chip_entity/                芯片实体（封装/引脚/电气参数/约束/勘误）           8 篇
@@ -87,19 +88,19 @@ HKB/
 git clone https://github.com/OpenSiFli/HKB.git
 ```
 
-克隆后，把 **`Knowledge Base/`** 整个文件夹作为上下文提供给你的 AI 工具即可，**无需任何构建步骤**。
+克隆后，把 **`Knowledge_Base/`** 整个文件夹作为上下文提供给你的 AI 工具即可，**无需任何构建步骤**。
 
 ### 方式 A：用 Obsidian 打开
-直接用 Obsidian 打开 `Knowledge Base/` 文件夹，即可获得双链、反向链接与图谱视图（Vault 配置已随 `.obsidian/` 一起分发）。
+直接用 Obsidian 打开 `Knowledge_Base/` 文件夹，即可获得双链、反向链接与图谱视图（Vault 配置已随 `.obsidian/` 一起分发）。
 
 ### 方式 B：喂给任意 AI / RAG
-把 `Knowledge Base/` 作为项目上下文（WorkBuddy、Claude、本地模型、MCP 知识源等），直接提问：
+把 `Knowledge_Base/` 作为项目上下文（WorkBuddy、Claude、本地模型、MCP 知识源等），直接提问：
 - "SF32LB52x 电池系列的电源引脚有哪些？充电电流多大？"
 - "SF32LB57X 的 GPIO 默认上下拉状态是什么？"
 - "Audio ADC 单端输入需要多大的隔直电容？"
 
 ### 方式 C：原理图 AI 评审（推荐 WorkBuddy）
-把本仓库作为 WorkBuddy 项目打开，`.workbuddy/skills/eda-schematic-review` 会被**自动发现并加载**。上传你的原理图 PDF 并要求"评审原理图"，技能会：
+把 `Knowledge_Base/` 作为 WorkBuddy 项目打开，其下的 `Knowledge_Base/.workbuddy/skills/eda-schematic-review` 会被**自动发现并加载**。上传你的原理图 PDF 并要求"评审原理图"，技能会：
 1. 用 `EDA原理图PDF识别提示词.md` 的方案A（pdfplumber 矢量文本）提取位号/参数/网络/坐标；
 2. 先判定 MCU 型号与版本（锂电版 / 常规版，误判会推翻整份报告）；
 3. 逐条对照 `wiki/mcu/all/check_rules/`（42 条规则）给出 **通过 / 命中 / 待核实 / 不适用** 分级结论与整改建议；
@@ -125,7 +126,7 @@ git clone https://github.com/OpenSiFli/HKB.git
 
 ## 六、技能与依赖
 
-- `Knowledge Base/.workbuddy/skills/` 下的 3 个技能随仓库分发，**拷贝到 WorkBuddy 项目即自动加载**，无需机器专属配置。
+- `Knowledge_Base/.workbuddy/skills/` 下的 3 个技能随仓库分发，**拷贝到 WorkBuddy 项目即自动加载**，无需机器专属配置。
 - `eda-schematic-review` 评审需要 Python 3 + `pdfplumber` + `fpdf2`。
 - `_gen_checklist_cr.py` / `_gen_sf32lb57_pinmux.py` 是知识库生成期的辅助脚本（从官方 Checklist / pinmux xlsx 产出 `wiki/` 规则与矩阵），随仓库提供以备复现，日常问答/评审不依赖它们。
 
@@ -133,8 +134,8 @@ git clone https://github.com/OpenSiFli/HKB.git
 
 ## 七、备注
 
-- `Knowledge Base/` 文件夹名含空格，若你的脚本/工具对空格敏感，可重命名为 `Knowledge_Base` 或 `knowledge-base`（同步更新 README 内提及路径即可）。
-- `.obsidian/workspace.json` 是个人视图状态，若不想沿用仓库默认布局可删除，其余 Vault 配置建议保留。
+- 知识库主目录命名为 **`Knowledge_Base/`**（下划线，避免空格对脚本/工具的兼容问题）。
+- `.obsidian/workspace.json` 是个人视图状态，已在 `.gitignore` 中忽略，**不会随仓库分发**；若不想沿用仓库默认布局可删除，其余 Vault 配置建议保留。
 - 所有页面以 Obsidian 风格双链（`[[...]]`）互相关联；不支持双链的查看器也能正常做纯文本检索。
 
 ---
