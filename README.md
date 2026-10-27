@@ -85,7 +85,7 @@ HKB/
 ## 四、给开发者的使用方法
 
 ```bash
-git clone https://github.com/OpenSiFli/HKB.git
+git clone https://github.com/OpenSiFli/SiFli-HKB.git
 ```
 
 克隆后，把 **`Knowledge_Base/`** 整个文件夹作为上下文提供给你的 AI 工具即可，**无需任何构建步骤**。
