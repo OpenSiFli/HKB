@@ -1,7 +1,7 @@
 # SiFli-HKB —— SiFli 硬件知识库（Hardware Knowledge Base）
 
-> 一个**可直接下载到本地、供 AI 工具检索与原理图评审使用**的 SiFli（思澈科技）MCU 硬件知识库。
-> **无网页版、不走文档站点构建**——本仓库的目的就是让你 `git clone` 下来，用本地 AI 助手 / RAG 直接读取，回答硬件设计问题、评审原理图。
+> 一个**可直接下载到本地、由 AI 工具检索与原理图评审使用**的 SiFli（思澈科技）MCU 硬件知识库。
+> **无网页版、不走文档站点构建**。你可以手动 `git clone` 使用（见第五节），也可以把仓库 URL 直接交给本地 AI 智能体全自动使用（见第四节，**无需任何 Git / 命令行操作**）。
 
 ---
 
@@ -48,7 +48,7 @@ SiFli-HKB/
     │       ├── schematics/                 原理图结构化提取
     │       └── sources/                    来源摘要
     ├── cmd/                                ← 18 条"入库指令"提示词（新增/更新各类资料的标准 SOP）
-    ├── .workbuddy/skills/                  ← 3 个 WorkBuddy 自定义技能（随仓库拷贝即用）
+    ├── .workbuddy/skills/                  ← 3 个 AI 智能体技能（随仓库分发，Agent 可自动装载）
     │   ├── eda-schematic-review             EDA 原理图 PDF 评审（核心：对照 check_rules 出分级报告）
     │   ├── kb-ingest-dispatch              知识库入库总调度（自然语言 → 路由到 cmd/ 指令）
     │   └── sf32lb52-hw-design-guide-ingest  SF32LB52 家族硬件设计指南入库
@@ -82,7 +82,44 @@ SiFli-HKB/
 
 ---
 
-## 四、给开发者的使用方法
+## 四、零门槛用法：只需一个知识库 URL，AI Agent 全自动（面向不懂 AI / Git / GitHub 的开发者）
+
+如果你不熟悉 Git、GitHub，也没用过 AI 智能体（Agent）工具，请直接看本节。你**不需要**自己 clone、不需要配置环境、不需要安装任何东西——只要把下面这个知识库地址交给你的**本地 AI 客户端（需支持"智能体 / 技能"能力，例如 WorkBuddy）**，剩下的它全自动完成：
+
+```
+https://github.com/OpenSiFli/SiFli-HKB
+```
+
+把 URL 发给 Agent 后，它会自动替你做完三件事：
+
+1. **自动获取知识库**
+   - 首次使用时，Agent 会把整个仓库 clone 到它本地的缓存目录——你**无需登录 GitHub、无需敲命令、无需打开网页**；
+   - 你也可以让 Agent **每次提问时直接从 GitHub 现场拉取最新资料**（见下方两种模式），始终拿到最新版本。
+
+2. **自动装载专属技能**
+   - Agent 会扫到知识库自带的 `Knowledge_Base/.workbuddy/skills/`（原理图评审、知识库入库调度等 3 个技能）；
+   - 并按每个技能 `SKILL.md` 中声明的依赖，**自动准备运行环境**（例如自动创建 Python 虚拟环境并安装 `pdfplumber`、`fpdf2`），**无需你手动安装任何依赖**。
+
+3. **直接开问 / 传图评审**
+   - 知识库就位后，你直接用自然语言提问、或把原理图 PDF 丢给 Agent 即可，**无需任何额外配置**。
+
+### 两种"获取知识库"模式（告诉 Agent 选哪种）
+- **模式 A · 克隆缓存（推荐长期使用）**：Agent 把仓库 clone 到本地一次，之后离线也能秒答，速度快、不依赖网络。适合反复查阅与评审。
+- **模式 B · 现场拉取（始终最新）**：Agent 每次回答都按需从 GitHub 读取最新的相关页面，永远对应仓库最新内容；无需本地占用空间，但每次需联网。
+
+### 给 Agent 的"一句话指令"模板（直接复制粘贴）
+- **问答示例**：
+  > 请用这个硬件知识库 https://github.com/OpenSiFli/SiFli-HKB 回答：SF32LB57X 的 GPIO 默认上下拉状态是什么？
+- **原理图评审示例**：
+  > 请用知识库 https://github.com/OpenSiFli/SiFli-HKB 自带的 eda-schematic-review 技能，评审我上传的这份原理图 PDF，并给出分级整改建议。
+
+> 💡 **前提说明**：以上"全自动"依赖你使用的 AI 客户端具备**执行命令（clone / 安装依赖）**与**加载技能**的能力。若你用的是 WorkBuddy，把 `Knowledge_Base/` 作为项目打开即可让 `.workbuddy/skills/` 自动生效；如果所用客户端暂不支持自动安装技能，可改用下一节的手动方式。
+
+---
+
+## 五、进阶用法（手动 clone / Obsidian / RAG / 入库）
+
+如果你是熟练开发者，也可以手动把仓库拉到本地使用。先用 Git 克隆：
 
 ```bash
 git clone https://github.com/OpenSiFli/SiFli-HKB.git
@@ -113,7 +150,7 @@ git clone https://github.com/OpenSiFli/SiFli-HKB.git
 
 ---
 
-## 五、本仓库「不含」的内容（分发时已排除）
+## 六、本仓库「不含」的内容（分发时已排除）
 
 为了保证仓库轻量且规避内部资料外泄，以下两个目录**刻意未随本仓库分发**：
 
@@ -124,15 +161,15 @@ git clone https://github.com/OpenSiFli/SiFli-HKB.git
 
 ---
 
-## 六、技能与依赖
+## 七、技能与依赖
 
-- `Knowledge_Base/.workbuddy/skills/` 下的 3 个技能随仓库分发，**拷贝到 WorkBuddy 项目即自动加载**，无需机器专属配置。
-- `eda-schematic-review` 评审需要 Python 3 + `pdfplumber` + `fpdf2`。
+- `Knowledge_Base/.workbuddy/skills/` 下的 3 个技能随仓库分发；在支持技能的 AI 客户端中**自动发现并加载**（例如把 `Knowledge_Base/` 作为 WorkBuddy 项目打开），无需机器专属配置。
+- `eda-schematic-review` 评审需要 Python 3 + `pdfplumber` + `fpdf2`（由技能依据依赖自动准备，或按 `SKILL.md` 手动建 venv 安装）。
 - `_gen_checklist_cr.py` / `_gen_sf32lb57_pinmux.py` 是知识库生成期的辅助脚本（从官方 Checklist / pinmux xlsx 产出 `wiki/` 规则与矩阵），随仓库提供以备复现，日常问答/评审不依赖它们。
 
 ---
 
-## 七、备注
+## 八、备注
 
 - 知识库主目录命名为 **`Knowledge_Base/`**（下划线，避免空格对脚本/工具的兼容问题）。
 - `.obsidian/workspace.json` 是个人视图状态，已在 `.gitignore` 中忽略，**不会随仓库分发**；若不想沿用仓库默认布局可删除，其余 Vault 配置建议保留。
@@ -140,7 +177,7 @@ git clone https://github.com/OpenSiFli/SiFli-HKB.git
 
 ---
 
-## 八、相关资源
+## 九、相关资源
 
 - SiFli 官网：<https://www.sifli.com/>
 - 芯片选型与开发板 Wiki：<https://wiki.sifli.com/> 、<https://wiki.sifli.com/en/>
@@ -151,6 +188,6 @@ git clone https://github.com/OpenSiFli/SiFli-HKB.git
 
 ---
 
-## 九、License
+## 十、License
 
 本仓库文档采用 **Apache License 2.0**，详见 [LICENSE](./LICENSE)。
